@@ -1,0 +1,41 @@
+version: '3'
+services: 
+    tada-web:
+        build:
+            context: ./apache
+        ports: 
+            - '8080:80'
+        restart: always
+        volumes: 
+            - /app/www:/app/www
+        depends_on:
+            - tada-redis
+        networks:
+            - tada-network
+        stdin_open: true
+    
+    tada-node:
+        build:
+            context: ./node
+        ports: 
+            - '4000:4000'
+        restart: always
+        volumes: 
+            - ./app/node:/app/node
+        depends_on:
+            - tada-redis
+        volumes:
+            - /app/node:/app/node
+        networks:
+            - tada-network
+        stdin_open: true
+    
+    tada-redis:
+        build:
+            context: ./redis
+        ports: 
+            - '6379:6379'
+        restart: always
+        networks:
+            - tada-network
+        stdin_open: true    
